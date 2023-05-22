@@ -47,8 +47,14 @@ const cardDelete = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({
+          message: "Карточка с указанным _id не найдена",
+          stack: err.stack,
+        });
+      }
+      if (err.name === "ValidationError") {
         return res.status(NOT_FOUND).send({
-          message: "Пользователь с указанным _id не найден",
+          message: "Переданы некорректные данные",
           stack: err.stack,
         });
       } else {
@@ -69,7 +75,7 @@ const likeCard = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        return res.status(NOT_FOUND).send({
+        return res.status(BAD_REQUEST).send({
           message: "Карточка с указанным _id не найдена",
           stack: err.stack,
         });
@@ -78,7 +84,7 @@ const likeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({
+        return res.status(NOT_FOUND).send({
           message: "Переданы некорректные данные",
           stack: err.stack,
         });
@@ -98,7 +104,7 @@ const dislikeCard = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        return res.status(NOT_FOUND).send({
+        return res.status(BAD_REQUEST).send({
           message: "Карточка с указанным _id не найдена",
           stack: err.stack,
         });
@@ -107,7 +113,7 @@ const dislikeCard = (req, res) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        return res.status(BAD_REQUEST).send({
+        return res.status(NOT_FOUND).send({
           message: "Переданы некорректные данные",
           stack: err.stack,
         });
