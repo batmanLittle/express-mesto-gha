@@ -3,6 +3,7 @@ const mongoose = require("mongoose");
 const bodyParser = require("body-parser");
 const userRouter = require("./routes/users");
 const cardRouter = require("./routes/cards");
+const notFoundError = require("./notFoundError");
 
 const app = express();
 
@@ -21,6 +22,10 @@ app.use((req, res, next) => {
 
 app.use(userRouter);
 app.use(cardRouter);
+
+app.use("*", () => {
+  throw new notFoundError("Запрашиваемый ресурс не найден");
+});
 
 app.listen(3000, () => {
   console.log("App listening on server 3000");
