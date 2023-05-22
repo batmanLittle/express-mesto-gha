@@ -10,7 +10,6 @@ const getCards = (req, res) => {
     .catch((err) => {
       res.status(SERVER_ERROR).send({
         message: "Внутренняя ошибка сервера",
-        stack: err.stack,
       });
     });
 };
@@ -28,12 +27,10 @@ const createCards = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
         });
       } else {
         return res.status(SERVER_ERROR).send({
           message: "Внутренняя ошибка сервера",
-          err: err.message,
         });
       }
     });
@@ -43,24 +40,21 @@ const cardDelete = (req, res) => {
   cardModel
     .findByIdAndRemove(req.params.cardId)
     .then((user) => {
+      if (!user) {
+        return res.status(NOT_FOUND).send({
+          message: "Карточка с указанным _id не найдена",
+        });
+      }
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({
-          message: "Карточка с указанным _id не найдена",
-          stack: err.stack,
-        });
-      }
-      if (err.name === "ValidationError") {
-        return res.status(NOT_FOUND).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
         });
       } else {
         return res.status(SERVER_ERROR).send({
           message: "Внутренняя ошибка сервера",
-          stack: err.stack,
         });
       }
     });
@@ -75,23 +69,20 @@ const likeCard = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        return res.status(BAD_REQUEST).send({
+        return res.status(NOT_FOUND).send({
           message: "Карточка с указанным _id не найдена",
-          stack: err.stack,
         });
       }
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(NOT_FOUND).send({
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
         });
       }
       return res.status(SERVER_ERROR).send({
         message: "Внутренняя ошибка сервера",
-        stack: err.stack,
       });
     });
 };
@@ -104,23 +95,20 @@ const dislikeCard = (req, res) => {
     )
     .then((card) => {
       if (!card) {
-        return res.status(BAD_REQUEST).send({
+        return res.status(NOT_FOUND).send({
           message: "Карточка с указанным _id не найдена",
-          stack: err.stack,
         });
       }
       return res.status(200).send(card);
     })
     .catch((err) => {
-      if (err.name === "ValidationError") {
-        return res.status(NOT_FOUND).send({
+      if (err.name === "CastError") {
+        return res.status(BAD_REQUEST).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
         });
       }
       return res.status(SERVER_ERROR).send({
         message: "Внутренняя ошибка сервера",
-        stack: err.stack,
       });
     });
 };

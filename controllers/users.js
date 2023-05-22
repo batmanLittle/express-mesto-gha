@@ -19,26 +19,22 @@ const getUsersById = (req, res) => {
   usersModel
     .findById(req.params.userId)
     .then((user) => {
+      if (!user) {
+        return res.status(NOT_FOUND).send({
+          message: "Пользователь с указанным _id не найден",
+        });
+      }
       res.status(200).send(user);
     })
     .catch((err) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({
-          message: "Пользователь с указанным _id не найден",
-          stack: err.stack,
-        });
-      }
-      if (err.name === "ValidationError") {
-        return res.status(NOT_FOUND).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
-        });
-      } else {
-        return res.status(SERVER_ERROR).send({
-          message: "Внутренняя ошибка сервера",
-          stack: err.stack,
         });
       }
+      return res.status(SERVER_ERROR).send({
+        message: "Внутренняя ошибка сервера",
+      });
     });
 };
 
