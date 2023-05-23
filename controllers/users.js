@@ -1,5 +1,5 @@
 const usersModel = require("../models/user");
-const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../errors");
+const { BAD_REQUEST, NOT_FOUND, SERVER_ERROR } = require("../utils/errors");
 
 const getUsers = (req, res) => {
   usersModel
@@ -10,7 +10,6 @@ const getUsers = (req, res) => {
     .catch((err) => {
       res.status(SERVER_ERROR).send({
         message: "Внутренняя ошибка сервера",
-        stack: err.stack,
       });
     });
 };
@@ -18,15 +17,16 @@ const getUsers = (req, res) => {
 const getUsersById = (req, res) => {
   usersModel
     .findById(req.params.userId)
+    .orFail()
     .then((user) => {
-      if (!user) {
+      res.send(user);
+    })
+    .catch((err) => {
+      if (err.name === "DocumentNotFoundError") {
         return res.status(NOT_FOUND).send({
           message: "Пользователь с указанным _id не найден",
         });
       }
-      res.status(200).send(user);
-    })
-    .catch((err) => {
       if (err.name === "CastError") {
         return res.status(BAD_REQUEST).send({
           message: "Переданы некорректные данные",
@@ -49,12 +49,10 @@ const createUsers = (req, res) => {
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
         });
       } else {
         return res.status(SERVER_ERROR).send({
           message: "Внутренняя ошибка сервера",
-          err: err.message,
         });
       }
     });
@@ -72,18 +70,16 @@ const updateUser = (req, res) => {
       }
     )
     .then((user) => {
-      res.status(200).send(user);
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
         });
       } else {
         return res.status(SERVER_ERROR).send({
           message: "Внутренняя ошибка сервера",
-          err: err.message,
         });
       }
     });
@@ -101,18 +97,16 @@ const updateAvatar = (req, res) => {
       }
     )
     .then((user) => {
-      res.status(200).send(user);
+      res.send(user);
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
         return res.status(BAD_REQUEST).send({
           message: "Переданы некорректные данные",
-          stack: err.stack,
         });
       } else {
         return res.status(SERVER_ERROR).send({
           message: "Внутренняя ошибка сервера",
-          err: err.message,
         });
       }
     });
