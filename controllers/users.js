@@ -73,8 +73,9 @@ const createUser = (req, res, next) => {
     .catch(next);
 };
 
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about } = req.body;
+
   usersModel
     .findByIdAndUpdate(
       req.user._id,
@@ -95,8 +96,9 @@ const updateUser = (req, res) => {
     .catch(next);
 };
 
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
+
   usersModel
     .findByIdAndUpdate(
       req.user._id,

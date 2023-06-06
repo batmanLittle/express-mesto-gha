@@ -71,6 +71,7 @@ const likeCard = (req, res, next) => {
     })
     .catch(next);
 };
+
 const dislikeCard = (req, res, next) => {
   cardModel
     .findByIdAndUpdate(
