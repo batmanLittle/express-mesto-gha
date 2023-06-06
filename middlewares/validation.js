@@ -1,7 +1,7 @@
 const { celebrate, Joi } = require("celebrate");
 
 const avatarRegExp =
-  /^(https?:\/\/)?(www\.)?[a-z0-9\-\.\_\~\:\/\?\#\[\]\@\!\$\&\'\(\)\*\+\,\;\=]+#*/;
+  /^https?:\/\/?(www\.)?[a-zA-Z0-9\-._~:/?#\\[\]@!\\$&'()*+,;=]+(#)?$/;
 
 const getUsersByIdValid = celebrate({
   params: Joi.object().keys({
@@ -46,7 +46,14 @@ const createCardsValid = celebrate({
   }),
 });
 
+const cardIdValid = celebrate({
+  params: Joi.object().keys({
+    cardId: Joi.string().required().hex().length(24),
+  }),
+});
+
 module.exports = {
+  cardIdValid,
   updateAvatarValid,
   getUsersByIdValid,
   createUserValid,
