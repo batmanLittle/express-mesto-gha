@@ -28,7 +28,7 @@ const cardDelete = (req, res, next) => {
         });
     })
     .catch((err) => {
-      if (err.name === "CastError") {
+      if (err.name === "DocumentNotFoundError") {
         return next(new NotFound("Карточка с таким id не найдена"));
       }
       return next(err);
