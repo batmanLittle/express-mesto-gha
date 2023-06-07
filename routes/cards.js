@@ -12,7 +12,7 @@ router.get("/cards", getCards);
 
 router.post("/cards", createCardsValid, createCards);
 
-router.delete("/cards/:cardId", cardDelete);
+router.delete("/cards/:cardId", cardIdValid, cardDelete);
 router.put("/cards/:cardId/likes", cardIdValid, likeCard);
 router.delete("/cards/:cardId/likes", cardIdValid, dislikeCard);
 
