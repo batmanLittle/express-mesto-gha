@@ -27,7 +27,12 @@ const cardDelete = (req, res, next) => {
           }
         });
     })
-    .catch(next);
+    .catch((err) => {
+      if (err.name === "CastError") {
+        return next(new NotFound("Карточка с таким id не найдена"));
+      }
+      return next(err);
+    });
 };
 
 const createCards = (req, res, next) => {
