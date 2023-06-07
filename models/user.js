@@ -41,7 +41,6 @@ const userSchema = new mongoose.Schema(
       type: String,
       select: false,
       required: [true, "Введите пароль"],
-      minlength: [8, "Минимальная длина пароля - 8"],
     },
   },
   { versionKey: false }

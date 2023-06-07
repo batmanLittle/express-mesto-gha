@@ -26,10 +26,10 @@ const getMe = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFound("Пользователь с указанным _id не найден"));
+        return next(new NotFound("Пользователь с указанным _id не найден"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 const getUsersById = (req, res, next) => {
@@ -41,36 +41,34 @@ const getUsersById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFound("Пользователь с указанным _id не найден"));
+        return next(new NotFound("Пользователь с указанным _id не найден"));
       }
       if (err.name === "CastError") {
-        next(new BadRequest("Переданы некорректные данные"));
+        return next(new BadRequest("Переданы некорректные данные"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 const createUser = (req, res, next) => {
   const { name, about, avatar, email, password } = req.body;
 
-  bcrypt
-    .hash(password, 10)
-    .then((hash) =>
-      usersModel
-        .create({ name, about, avatar, email, password: hash })
-        .then(({ name, about, avatar, email }) => {
-          res.status(201).send({ name, about, avatar, email });
-        })
-        .catch((err) => {
-          if (err.name === "MongoServerError") {
-            next(new Conflict("Такой пользаватель уже существует"));
-          }
-          if (err.name === "ValidationError") {
-            next(new BadRequest("Переданы некорректные данные"));
-          }
-        })
-    )
-    .catch(next);
+  bcrypt.hash(password, 10).then((hash) =>
+    usersModel
+      .create({ name, about, avatar, email, password: hash })
+      .then(({ name, about, avatar, email }) => {
+        res.status(201).send({ name, about, avatar, email });
+      })
+      .catch((err) => {
+        if (err.name === "MongoServerError") {
+          return next(new Conflict("Такой пользаватель уже существует"));
+        }
+        if (err.name === "ValidationError") {
+          return next(new BadRequest("Переданы некорректные данные"));
+        }
+        return next(err);
+      })
+  );
 };
 
 const updateUser = (req, res, next) => {
@@ -90,10 +88,10 @@ const updateUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new BadRequest("Переданы некорректные данные"));
+        return next(new BadRequest("Переданы некорректные данные"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 const updateAvatar = (req, res, next) => {
@@ -113,10 +111,10 @@ const updateAvatar = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        next(new BadRequest("Переданы некорректные данные"));
+        return next(new BadRequest("Переданы некорректные данные"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 login = (req, res, next) => {
@@ -132,10 +130,10 @@ login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "Error") {
-        next(new Auth(" Неправильная почта или пароль"));
+        return next(new Auth(" Неправильная почта или пароль"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 module.exports = {

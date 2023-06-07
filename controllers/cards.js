@@ -27,9 +27,6 @@ const cardDelete = (req, res, next) => {
           }
         });
     })
-    .catch(() => {
-      throw new NotFound("Карточка с таким id не найдена");
-    })
     .catch(next);
 };
 
@@ -44,10 +41,10 @@ const createCards = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "ValidationError") {
-        throw new BadRequest("Переданы некорректные данные");
+        return next(new BadRequest("Переданы некорректные данные"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 const likeCard = (req, res, next) => {
@@ -63,13 +60,13 @@ const likeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFound("Карточка с таким id не найдена"));
+        return next(new NotFound("Карточка с таким id не найдена"));
       }
       if (err.name === "CastError") {
-        next(new BadRequest("Переданы некорректные данные"));
+        return next(new BadRequest("Переданы некорректные данные"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 const dislikeCard = (req, res, next) => {
@@ -85,13 +82,13 @@ const dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === "DocumentNotFoundError") {
-        next(new NotFound("Карточка с таким id не найдена"));
+        return next(new NotFound("Карточка с таким id не найдена"));
       }
       if (err.name === "CastError") {
-        next(new BadRequest("Переданы некорректные данные"));
+        return next(new BadRequest("Переданы некорректные данные"));
       }
-    })
-    .catch(next);
+      return next(err);
+    });
 };
 
 module.exports = {

@@ -1,7 +1,7 @@
 const { celebrate, Joi } = require("celebrate");
 
 const avatarRegExp =
-  /^https?:\/\/?(www\.)?[a-zA-Z0-9\-._~:/?#\\[\]@!\\$&'()*+,;=]+(#)?$/;
+  /^https*:\/\/(www\.)*[-a-zA-Z0-9@:%._+~#=]{1,}\.[a-zA-Z0-9()]([-a-zA-Z0-9-._~:/?#[\]@!$&'()*+,;=]*)?$/i;
 
 const getUsersByIdValid = celebrate({
   params: Joi.object().keys({
